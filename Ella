@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Nifise!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 24px;
+      max-width: 360px;
+      width: 90%;
+      position: relative;
+      z-index: 1;
+    }
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    h1 { margin: 0; font-size: 1.8em; color: #e27d60; }
+    p { margin: 12px 0; font-size: 1.1em; line-height: 1.5; }
+    footer { margin-top: 20px; font-size: 0.9em; color: #777; }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+  <div class="card">
+    <img src="photo.jpg" alt="Birthday photo of Nifise" />
+    <h1>Happy Birthday, Nifise!</h1>
+    <p>Hope you have a better day than the previous ones, more clients, and actually whatever you want — because you deserve it!</p>
+    <footer>— A Secret Admirer 💖</footer>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    });
+    const colors = ['#FFC0CB','#FFD700','#FF69B4','#FFB6C1','#FFA07A'];
+    const pieces = [];
+    const rand = (min, max) => Math.random() * (max - min) + min;
+    class Piece {
+      constructor() {
+        this.x = rand(0, W);
+        this.y = rand(-H, 0);
+        this.vx = rand(-1, 1);
+        this.vy = rand(2, 5);
+        this.size = rand(5, 10);
+        this.color = colors[Math.floor(rand(0, colors.length))];
+        this.tilt = rand(-10, 10);
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.tilt += rand(-0.5, 0.5);
+        if (this.y > H) {
+          this.y = rand(-20, 0);
+          this.x = rand(0, W);
+        }
+      }
+      draw() {
+        ctx.save();
+        ctx.fillStyle = this.color;
+        ctx.translate(this.x, this.y);
+        ctx.rotate((this.tilt * Math.PI) / 180);
+        ctx.fillRect(0, 0, this.size, this.size / 4);
+        ctx.restore();
+      }
+    }
+    for (let i = 0; i < 200; i++) pieces.push(new Piece());
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+      pieces.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
